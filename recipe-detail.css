@@ -1,0 +1,256 @@
+/* Recipe Detail Page Styles */
+
+.recipe-detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Hero Image */
+.recipe-hero {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-detail-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Title and Meta */
+.recipe-detail-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.recipe-meta-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.recipe-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.recipe-rating {
+    color: var(--accent);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Tags */
+.recipe-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tag {
+    background-color: var(--light-grey);
+    color: var(--dark);
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+/* Description */
+.recipe-detail-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: var(--dark);
+}
+
+/* Dynamic Content Area */
+.content-toggle-container {
+    margin-bottom: 2rem;
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+}
+
+.dynamic-content {
+    display: none;
+}
+
+.dynamic-content.active {
+    display: block;
+}
+
+/* Ingredients Section */
+.ingredients-section {
+    margin-bottom: 2.5rem;
+}
+
+.ingredients-section h2,
+.reviews-section h2,
+.instructions-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    color: var(--dark);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--light-grey);
+}
+
+.ingredients-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.ingredients-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--light-grey);
+    display: flex;
+    justify-content: space-between;
+}
+
+.ingredients-list li:last-child {
+    border-bottom: none;
+}
+
+.ingredient-quantity {
+    color: #666;
+    font-weight: 500;
+}
+
+/* Instructions Section */
+.instructions-list {
+    padding-left: 1.5rem;
+}
+
+.instructions-list li {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.instructions-list li:last-child {
+    margin-bottom: 0;
+}
+
+/* Reviews Section */
+.review-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--light-grey);
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+}
+
+.reviewer-name {
+    font-weight: 600;
+}
+
+.review-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.review-rating {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.review-text {
+    line-height: 1.5;
+}
+
+/* Action Buttons */
+.recipe-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.toggle-view-btn, .leave-review-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.toggle-view-btn {
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+}
+
+.toggle-view-btn:hover {
+    background-color: #d8424f;
+}
+
+.leave-review-btn {
+    background-color: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.leave-review-btn:hover {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .recipe-detail-title {
+        font-size: 2rem;
+    }
+    
+    .recipe-detail-image {
+        height: 300px;
+    }
+    
+    .recipe-meta-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+    
+    .content-toggle-container {
+        padding: 1.5rem;
+    }
+    
+    .recipe-actions {
+        flex-direction: column;
+    }
+    
+    .toggle-view-btn, .leave-review-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .recipe-detail-title {
+        font-size: 1.8rem;
+    }
+    
+    .recipe-detail-image {
+        height: 250px;
+    }
+    
+    .recipe-meta {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+} 
