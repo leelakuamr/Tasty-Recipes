@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe - Tasty Recipes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="recipes.css">
+    <link rel="stylesheet" href="add-recipe.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">Tasty Recipes</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="add-recipe.html" class="active">Add Recipe</a></li>
+                <li><a href="login.html">Login/Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="add-recipe-container">
+            <h1>Share Your Recipe</h1>
+            
+            <form id="addRecipeForm" class="recipe-form">
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="recipeTitle">Recipe Title*</label>
+                        <input type="text" id="recipeTitle" name="recipeTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipeDescription">Short Description*</label>
+                        <textarea id="recipeDescription" name="recipeDescription" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prepTime">Prep Time (mins)*</label>
+                            <input type="number" id="prepTime" name="prepTime" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cookTime">Cook Time (mins)*</label>
+                            <input type="number" id="cookTime" name="cookTime" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="servings">Servings*</label>
+                            <input type="number" id="servings" name="servings" min="1" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Recipe Details</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Category*</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select a category</option>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                                <option value="dessert">Dessert</option>
+                                <option value="snack">Snack</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label>Dietary Preferences</label>
+                            <div class="checkbox-options">
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="vegetarian" name="diet" value="vegetarian">
+                                    <label for="vegetarian">Vegetarian</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="vegan" name="diet" value="vegan">
+                                    <label for="vegan">Vegan</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="glutenFree" name="diet" value="glutenFree">
+                                    <label for="glutenFree">Gluten-Free</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="dairyFree" name="diet" value="dairyFree">
+                                    <label for="dairyFree">Dairy-Free</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ingredients">Ingredients* (one per line)</label>
+                        <textarea id="ingredients" name="ingredients" rows="6" required></textarea>
+                        <div class="input-tip">Example: 2 cups flour, sifted</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="instructions">Instructions* (one step per line)</label>
+                        <textarea id="instructions" name="instructions" rows="8" required></textarea>
+                        <div class="input-tip">Each line will be treated as a separate step</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Image and Tags</h2>
+                    
+                    <div class="form-group">
+                        <label for="recipeImage">Recipe Image</label>
+                        <input type="file" id="recipeImage" name="recipeImage" accept="image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipeTags">Tags (comma separated)</label>
+                        <input type="text" id="recipeTags" name="recipeTags">
+                        <div class="input-tip">Example: Quick, Spicy, Breakfast</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Your Information</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="authorName">Your Name*</label>
+                            <input type="text" id="authorName" name="authorName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="authorEmail">Email*</label>
+                            <input type="email" id="authorEmail" name="authorEmail" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-submit">
+                    <button type="button" id="previewBtn" class="secondary-btn">Preview</button>
+                    <button type="submit" id="submitBtn" class="primary-btn">Submit Recipe</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2023 Tasty Recipes. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="add-recipe.js"></script>
+</body>
+</html> 

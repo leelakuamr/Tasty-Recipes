@@ -118,8 +118,6 @@ const recipesPerPage = 6;
 // DOM Elements
 const recipeGrid = document.getElementById('recipeGrid');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
 
 // Create recipe card HTML
 function createRecipeCard(recipe) {
@@ -181,8 +179,7 @@ function renderRecipes(recipes) {
     document.querySelectorAll('.recipe-card').forEach(card => {
         card.addEventListener('click', function() {
             const recipeId = card.dataset.id;
-            // Navigate to the recipe detail page with the recipe ID
-            window.location.href = `recipe-detail.html?id=${recipeId}`;
+            showRecipeDetails(recipeId);
         });
     });
     
@@ -192,11 +189,260 @@ function renderRecipes(recipes) {
             e.stopPropagation(); // Prevent the card click event from firing
             const card = this.closest('.recipe-card');
             const recipeId = card.dataset.id;
-            
-            // Navigate to the recipe detail page with the recipe ID
-            window.location.href = `recipe-detail.html?id=${recipeId}`;
+            showRecipeDetails(recipeId);
         });
     });
+}
+
+// Function to show recipe details
+function showRecipeDetails(recipeId) {
+    // Find the recipe in our dataset
+    const recipe = recipeData.find(r => r.id == recipeId);
+    
+    if (recipe) {
+        // Create a modal to display recipe details
+        const modal = document.createElement('div');
+        modal.className = 'recipe-modal';
+        
+        // Generate HTML for recipe details
+        modal.innerHTML = `
+            <div class="recipe-modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="recipe-modal-header">
+                    <img src="${recipe.image}" alt="${recipe.title}" class="modal-image">
+                    <div class="modal-info">
+                        <h2>${recipe.title}</h2>
+                        <div class="modal-meta">
+                            <span>${recipe.cuisine}</span> • 
+                            <span>${recipe.type}</span>
+                        </div>
+                        <div class="modal-tags">
+                            ${recipe.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <p class="modal-description">${recipe.description}</p>
+                
+                <div class="recipe-details">
+                    <div class="recipe-ingredients">
+                        <h3>Ingredients</h3>
+                        <ul class="ingredients-list">
+                            ${getIngredientsForRecipe(recipe).map(ingredient => 
+                                `<li>${ingredient}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="recipe-instructions">
+                        <h3>Instructions</h3>
+                        <ol class="instructions-list">
+                            ${getInstructionsForRecipe(recipe).map(step => 
+                                `<li>${step}</li>`
+                            ).join('')}
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="recipe-actions">
+                    <a href="add-recipe.html" class="add-recipe-btn">Add Your Own Recipe</a>
+                </div>
+            </div>
+        `;
+        
+        // Add the modal to the page
+        document.body.appendChild(modal);
+        
+        // Show the modal
+        setTimeout(() => {
+            modal.style.display = 'flex';
+        }, 10);
+        
+        // Close the modal when clicking the close button
+        const closeBtn = modal.querySelector('.close-modal');
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+            setTimeout(() => {
+                modal.remove();
+            }, 300);
+        });
+        
+        // Close the modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
+        });
+    }
+}
+
+// Helper function to get ingredients for a recipe
+function getIngredientsForRecipe(recipe) {
+    // Sample ingredients for different recipes
+    const sampleIngredients = {
+        "Butter Chicken": [
+            "1.5 lbs boneless chicken thighs, cut into chunks",
+            "1/2 cup plain yogurt",
+            "2 tbsp lemon juice",
+            "2 tsp garam masala",
+            "1 tsp ground turmeric",
+            "1 tsp ground cumin",
+            "1 tsp chili powder",
+            "4 tbsp butter",
+            "1 large onion, finely chopped",
+            "3 cloves garlic, minced",
+            "1 tbsp fresh ginger, grated",
+            "1 cinnamon stick",
+            "14 oz tomato sauce",
+            "1 cup heavy cream",
+            "Salt to taste",
+            "Fresh cilantro for garnish"
+        ],
+        "Spaghetti Carbonara": [
+            "1 lb spaghetti",
+            "8 oz pancetta or thick-cut bacon, diced",
+            "4 large eggs",
+            "1 cup freshly grated Pecorino Romano cheese",
+            "1 tsp freshly ground black pepper",
+            "Salt to taste"
+        ],
+        "Greek Salad": [
+            "2 large tomatoes, cut into chunks",
+            "1 cucumber, sliced",
+            "1 red onion, thinly sliced",
+            "1 green bell pepper, chopped",
+            "1/2 cup Kalamata olives",
+            "6 oz feta cheese, cubed",
+            "2 tbsp olive oil",
+            "1 tbsp red wine vinegar",
+            "1 tsp dried oregano",
+            "Salt and pepper to taste"
+        ],
+        "Chocolate Brownies": [
+            "1/2 cup butter",
+            "1 cup granulated sugar",
+            "2 large eggs",
+            "1 tsp vanilla extract",
+            "1/2 cup all-purpose flour",
+            "1/3 cup cocoa powder",
+            "1/4 tsp salt",
+            "1/4 tsp baking powder",
+            "1/2 cup chocolate chips"
+        ],
+        "Thai Green Curry": [
+            "2 tbsp green curry paste",
+            "1 can (14 oz) coconut milk",
+            "1 lb chicken breast, sliced",
+            "1 cup mixed vegetables (bell peppers, broccoli, carrots)",
+            "2 tbsp fish sauce",
+            "1 tbsp brown sugar",
+            "1 tbsp vegetable oil",
+            "Fresh Thai basil leaves",
+            "2 kaffir lime leaves",
+            "1 tbsp lime juice"
+        ],
+        "Avocado Toast": [
+            "2 slices whole grain bread",
+            "1 ripe avocado",
+            "1 tbsp lemon juice",
+            "Salt and pepper to taste",
+            "Red pepper flakes (optional)",
+            "1 tbsp olive oil",
+            "Optional toppings: fried egg, cherry tomatoes, feta cheese"
+        ]
+    };
+    
+    // If we have specific ingredients for this recipe, return those
+    if (sampleIngredients[recipe.title]) {
+        return sampleIngredients[recipe.title];
+    }
+    
+    // Otherwise return some default ingredients based on the recipe type
+    return [
+        "Ingredient 1",
+        "Ingredient 2",
+        "Ingredient 3",
+        "Ingredient 4",
+        "Ingredient 5"
+    ];
+}
+
+// Helper function to get instructions for a recipe
+function getInstructionsForRecipe(recipe) {
+    // Sample instructions for different recipes
+    const sampleInstructions = {
+        "Butter Chicken": [
+            "In a large bowl, mix yogurt, lemon juice, and spices. Add chicken and marinate for at least 1 hour.",
+            "Melt 2 tbsp butter in a large skillet. Add marinated chicken and cook until browned (about 5-6 minutes).",
+            "Remove chicken and set aside. In the same pan, add remaining butter.",
+            "Add onion and sauté until soft. Add garlic and ginger, cook for 1 minute.",
+            "Add cinnamon stick and tomato sauce. Simmer for 10-15 minutes.",
+            "Return chicken to the pan and simmer for 10 minutes.",
+            "Stir in cream and cook for 5 more minutes.",
+            "Garnish with cilantro and serve with rice or naan bread."
+        ],
+        "Spaghetti Carbonara": [
+            "Cook spaghetti in salted water according to package directions.",
+            "While pasta cooks, fry diced pancetta until crispy.",
+            "In a bowl, whisk together eggs, cheese, and black pepper.",
+            "Drain pasta, reserving 1/2 cup of pasta water.",
+            "Working quickly, add hot pasta to the pancetta, then immediately add egg mixture.",
+            "Toss everything together, adding pasta water as needed for a creamy sauce.",
+            "Serve immediately with extra cheese and black pepper."
+        ],
+        "Greek Salad": [
+            "In a large bowl, combine tomatoes, cucumber, red onion, green pepper, and olives.",
+            "Add feta cheese cubes.",
+            "In a small bowl, whisk together olive oil, red wine vinegar, and oregano.",
+            "Pour dressing over salad and toss gently.",
+            "Season with salt and pepper.",
+            "Let sit for 10 minutes before serving to allow flavors to blend."
+        ],
+        "Chocolate Brownies": [
+            "Preheat oven to 350°F (175°C). Line an 8-inch square baking pan with parchment paper.",
+            "Melt butter in a microwave-safe bowl.",
+            "Add sugar and whisk until combined. Add eggs and vanilla, mix well.",
+            "In a separate bowl, whisk together flour, cocoa powder, salt, and baking powder.",
+            "Add dry ingredients to wet ingredients and mix until just combined.",
+            "Fold in chocolate chips.",
+            "Pour batter into prepared pan and spread evenly.",
+            "Bake for 25-30 minutes until a toothpick comes out with a few moist crumbs.",
+            "Cool completely before cutting into squares."
+        ],
+        "Thai Green Curry": [
+            "Heat oil in a large pot or wok over medium heat.",
+            "Add curry paste and stir-fry for 1 minute until fragrant.",
+            "Add half of the coconut milk and simmer until oil separates (3-4 minutes).",
+            "Add chicken and stir to coat with the curry paste. Cook for 3-4 minutes.",
+            "Add remaining coconut milk, fish sauce, and sugar. Bring to a simmer.",
+            "Add vegetables and kaffir lime leaves. Simmer for 5-7 minutes until vegetables are tender.",
+            "Stir in Thai basil leaves and lime juice.",
+            "Serve hot with steamed jasmine rice."
+        ],
+        "Avocado Toast": [
+            "Toast bread until golden and crisp.",
+            "Cut avocado in half, remove pit, and scoop flesh into a bowl.",
+            "Add lemon juice, salt, and pepper. Mash with a fork to desired consistency.",
+            "Spread avocado mixture evenly on toast.",
+            "Drizzle with olive oil and sprinkle with red pepper flakes if desired.",
+            "Add any optional toppings and serve immediately."
+        ]
+    };
+    
+    // If we have specific instructions for this recipe, return those
+    if (sampleInstructions[recipe.title]) {
+        return sampleInstructions[recipe.title];
+    }
+    
+    // Otherwise return some default instructions
+    return [
+        "Prepare the ingredients.",
+        "Cook according to preference.",
+        "Combine all ingredients together.",
+        "Serve and enjoy!"
+    ];
 }
 
 // Load more recipes
@@ -216,7 +462,7 @@ function loadMoreRecipes() {
                 card.setAttribute('data-initialized', 'true');
                 card.addEventListener('click', function() {
                     const recipeId = card.dataset.id;
-                    // Navigate to the recipe detail page with the recipe ID
+                    // Navigate to the recipe page with the recipe ID
                     window.location.href = `recipe-detail.html?id=${recipeId}`;
                 });
                 
@@ -224,9 +470,9 @@ function loadMoreRecipes() {
                 if (viewButton) {
                     viewButton.addEventListener('click', function(e) {
                         e.stopPropagation(); // Prevent the card click event from firing
+                        const card = this.closest('.recipe-card');
                         const recipeId = card.dataset.id;
-                        
-                        // Navigate to the recipe detail page with the recipe ID
+                        // Navigate to the recipe page with the recipe ID
                         window.location.href = `recipe-detail.html?id=${recipeId}`;
                     });
                 }
@@ -240,46 +486,9 @@ function loadMoreRecipes() {
     }
 }
 
-// Search functionality (simplified)
-function handleSearch() {
-    const searchTerm = searchInput.value.trim().toLowerCase();
-    
-    if (searchTerm === '') {
-        // If search is cleared, reset to initial view
-        recipeGrid.innerHTML = '';
-        currentPage = 1;
-        loadInitialRecipes();
-        loadMoreBtn.style.display = 'block';
-    } else {
-        // Filter recipes based on search term
-        const filteredRecipes = recipeData.filter(recipe => 
-            recipe.title.toLowerCase().includes(searchTerm) ||
-            recipe.cuisine.toLowerCase().includes(searchTerm) ||
-            recipe.type.toLowerCase().includes(searchTerm) ||
-            recipe.description.toLowerCase().includes(searchTerm) ||
-            recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-        );
-        
-        // Display filtered recipes
-        recipeGrid.innerHTML = '';
-        renderRecipes(filteredRecipes);
-        
-        // Hide "Load More" button when searching
-        loadMoreBtn.style.display = 'none';
-    }
-}
-
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     loadInitialRecipes();
     
     loadMoreBtn.addEventListener('click', loadMoreRecipes);
-    
-    searchBtn.addEventListener('click', handleSearch);
-    
-    searchInput.addEventListener('keyup', function(e) {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    });
 }); 

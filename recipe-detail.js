@@ -356,22 +356,62 @@ const leaveReviewBtn = document.getElementById('leaveReviewBtn');
 function getRecipeIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     const recipeId = urlParams.get('id');
-    return recipeId ? parseInt(recipeId) : 1; // Default to recipe ID 1 if not specified
+    return recipeId ? parseInt(recipeId) : null;
 }
 
-// Load and display recipe details
-function loadRecipeDetails() {
-    const recipeId = getRecipeIdFromUrl();
-    
-    // Get recipe data (in a real app, this would be fetched from an API)
-    const recipe = recipeDetails[recipeId];
-    
-    // If recipe not found, show error
-    if (!recipe) {
-        document.querySelector('main').innerHTML = '<div class="error-message">Recipe not found. <a href="index.html">Return to homepage</a></div>';
-        return;
+// Function to find recipe by ID
+function findRecipeById(id) {
+    // First try to get from hardcoded sample data
+    if (recipeDetails[id]) {
+        return recipeDetails[id];
     }
     
+    // If not found in hardcoded data, try localStorage
+    // Convert the id to the correct type for comparison
+    const numericId = parseInt(id);
+    
+    // First, try to find in sample recipes from localStorage
+    let sampleRecipes = [];
+    try {
+        sampleRecipes = JSON.parse(localStorage.getItem('allSampleRecipes') || '[]');
+    } catch (e) {
+        console.error('Error loading sample recipes:', e);
+    }
+    
+    // Search for recipe in sample recipes from localStorage
+    let foundRecipe = sampleRecipes.find(recipe => recipe.id === numericId);
+    
+    // If not found in sample recipes, try to find in user recipes from localStorage
+    if (!foundRecipe) {
+        try {
+            const userRecipes = JSON.parse(localStorage.getItem('tastyRecipes') || '[]');
+            // For user recipes, we need to check if the ID is stored as a number or string
+            foundRecipe = userRecipes.find(recipe => recipe.id == id);
+        } catch (e) {
+            console.error('Error loading user recipes:', e);
+        }
+    }
+    
+    return foundRecipe;
+}
+
+// Show error message
+function showError(message) {
+    document.querySelector('main').innerHTML = `
+        <div class="error-container">
+            <h2>Error</h2>
+            <p>${message}</p>
+            <button id="backToRecipesBtn" class="secondary-btn">Back to Recipes</button>
+        </div>
+    `;
+    
+    document.getElementById('backToRecipesBtn').addEventListener('click', function() {
+        window.location.href = 'recipes.html';
+    });
+}
+
+// Display recipe from hardcoded data
+function displayHardcodedRecipe(recipe) {
     // Set page title
     document.title = `${recipe.title} - Tasty Recipes`;
     
@@ -415,6 +455,124 @@ function loadRecipeDetails() {
     `).join('');
 }
 
+// Display custom user recipe
+function displayUserRecipe(recipe) {
+    // Get recipe container element
+    const recipeContainer = document.getElementById('recipeDetail');
+    
+    // Calculate total time
+    const totalTime = recipe.prepTime + recipe.cookTime;
+    
+    // Format dietary information
+    const dietaryInfo = recipe.diet && recipe.diet.length > 0 
+        ? recipe.diet.map(d => capitalizeFirstLetter(d)).join(', ') 
+        : 'None';
+    
+    // Create HTML
+    const html = `
+        <div class="recipe-header">
+            <div class="recipe-image-container">
+                <img src="${recipe.image}" alt="${recipe.title}" class="recipe-detail-image">
+            </div>
+            <div class="recipe-info">
+                <h1>${recipe.title}</h1>
+                <p class="recipe-description">${recipe.description}</p>
+                
+                <div class="recipe-meta-info">
+                    <div class="meta-item">
+                        <span class="meta-label">Prep Time:</span>
+                        <span class="meta-value">${recipe.prepTime} mins</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Cook Time:</span>
+                        <span class="meta-value">${recipe.cookTime} mins</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Total Time:</span>
+                        <span class="meta-value">${totalTime} mins</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Servings:</span>
+                        <span class="meta-value">${recipe.servings}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Category:</span>
+                        <span class="meta-value">${capitalizeFirstLetter(recipe.category)}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Dietary:</span>
+                        <span class="meta-value">${dietaryInfo}</span>
+                    </div>
+                </div>
+                
+                <div class="recipe-tags">
+                    ${recipe.tags.map(tag => `<span class="recipe-tag">${tag}</span>`).join('')}
+                </div>
+            </div>
+        </div>
+        
+        <div class="recipe-content">
+            <div class="recipe-section ingredients-section">
+                <h2>Ingredients</h2>
+                <ul class="ingredients-list">
+                    ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="recipe-section instructions-section">
+                <h2>Instructions</h2>
+                <ol class="instructions-list">
+                    ${recipe.instructions.map(step => `<li>${step}</li>`).join('')}
+                </ol>
+            </div>
+        </div>
+        
+        ${recipe.author ? `
+        <div class="recipe-footer">
+            <p>Recipe by: ${recipe.author.name}</p>
+            ${recipe.dateAdded ? `<p>Added on: ${formatDate(recipe.dateAdded)}</p>` : ''}
+        </div>
+        ` : ''}
+        
+        <div class="recipe-actions">
+            <button id="backToRecipesBtn" class="secondary-btn">Back to Recipes</button>
+            <button id="printRecipeBtn" class="primary-btn">Print Recipe</button>
+        </div>
+    `;
+    
+    // Insert HTML
+    recipeContainer.innerHTML = html;
+    
+    // Add event listeners
+    document.getElementById('backToRecipesBtn').addEventListener('click', function() {
+        window.location.href = 'recipes.html';
+    });
+    
+    document.getElementById('printRecipeBtn').addEventListener('click', function() {
+        window.print();
+    });
+}
+
+// Helper function to capitalize first letter
+function capitalizeFirstLetter(string) {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    } catch (e) {
+        return dateString;
+    }
+}
+
 // Toggle between ingredients/reviews and instructions views
 function toggleContentView() {
     const isShowingDefault = defaultContent.classList.contains('active');
@@ -437,8 +595,35 @@ function showLeaveReviewAlert() {
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    loadRecipeDetails();
+    // Get the recipe ID from URL parameter
+    const recipeId = getRecipeIdFromUrl();
     
-    toggleViewBtn.addEventListener('click', toggleContentView);
-    leaveReviewBtn.addEventListener('click', showLeaveReviewAlert);
+    if (!recipeId) {
+        showError('Recipe ID is missing from the URL');
+        return;
+    }
+    
+    // Find the recipe
+    const recipe = findRecipeById(recipeId);
+    
+    if (!recipe) {
+        showError('Recipe not found');
+        return;
+    }
+    
+    // Determine which display function to use based on recipe structure
+    if (recipe.cuisine && recipe.ingredients && recipe.ingredients[0] && typeof recipe.ingredients[0] === 'object') {
+        displayHardcodedRecipe(recipe);
+    } else {
+        displayUserRecipe(recipe);
+    }
+    
+    // Set up event listeners
+    if (toggleViewBtn) {
+        toggleViewBtn.addEventListener('click', toggleContentView);
+    }
+    
+    if (leaveReviewBtn) {
+        leaveReviewBtn.addEventListener('click', showLeaveReviewAlert);
+    }
 }); 
